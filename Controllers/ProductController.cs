@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using DevOpsApp.Models;
 using DevOpsApp.Data;
-using Microsoft.EntityFrameworkCore;
+using DevOpsApp.Models;
 
 namespace DevOpsApp.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class ProductController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,61 +15,71 @@ namespace DevOpsApp.Controllers
             _context = context;
         }
 
-        // GET all
+        // ✅ GET ALL PRODUCTS
+        // GET: /api/Product
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = _context.Products.ToList();
             return Ok(products);
         }
 
-        // GET by ID
+        // ✅ GET PRODUCT BY ID
+        // GET: /api/Product/1
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return NotFound();
+            var product = _context.Products.Find(id);
+
+            if (product == null)
+                return NotFound("Product not found");
+
             return Ok(product);
         }
 
-        // CREATE
+        // ✅ CREATE PRODUCT
+        // POST: /api/Product
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        public IActionResult Create(Product product)
         {
             _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+
             return Ok(product);
         }
 
-        // UPDATE
+        // ✅ UPDATE PRODUCT
+        // PUT: /api/Product/1
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Product updatedProduct)
+        public IActionResult Update(int id, Product updatedProduct)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return NotFound();
+            var product = _context.Products.Find(id);
+
+            if (product == null)
+                return NotFound("Product not found");
 
             product.Name = updatedProduct.Name;
             product.Price = updatedProduct.Price;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+
             return Ok(product);
         }
 
-        // DELETE
+        // ✅ DELETE PRODUCT
+        // DELETE: /api/Product/1
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return NotFound();
+            var product = _context.Products.Find(id);
+
+            if (product == null)
+                return NotFound("Product not found");
 
             _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok("API Working - Version 2 🚀");
+            _context.SaveChanges();
+
+            return Ok("Product deleted successfully");
         }
     }
 }

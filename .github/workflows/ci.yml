@@ -49,7 +49,8 @@ jobs:
             username: ${{ secrets.EC2_USER }}
             key: ${{ secrets.EC2_KEY }}
             script: |
+              script: |
+              sudo docker ps -q | xargs -r sudo docker stop
+              sudo docker ps -aq | xargs -r sudo docker rm
               sudo docker pull madhurichavan612/devops-app:latest
-              sudo docker stop devops-container || true
-              sudo docker rm devops-container || true
               sudo docker run -d -p 5000:8080 --name devops-container madhurichavan612/devops-app
