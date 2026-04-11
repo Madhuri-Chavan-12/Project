@@ -67,5 +67,10 @@ namespace DevOpsApp.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("API Working - Version 2 🚀");
+        }
     }
 }
